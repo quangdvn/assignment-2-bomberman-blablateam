@@ -1,0 +1,36 @@
+1 13 31
+###############################
+#p11122** *  1 * 2 *  * * *   #
+#3#3#4#*# # #*#*# # # #*#*#*# #
+#34x*5    ***  *  1   * 2 * * #
+# # # # # #*# # #*#*# # # # #*#
+#f         x **  *  *   1     #
+# # # # # # # # # #*# #*# # # #
+#*  *      *  *      *        #
+# # # # #*# # # #*#*# # # # # #
+#*    **  *       *           #
+# #*# # # # # # #*# # # # # # #
+#           *   *  *          #
+###############################
+
+
+1st row data:
+(Number or Level) (Rows) (Columns)
+
+Info Tiles:
+# - Wall
+* - Brick
+x - Portal
+
+Characters:
+p - Player
+1 - Balloom
+2 - Oneal
+3 - Doll
+4 - Minvo
+5 - Kondoria
+
+Powerups:
+b - Powerup Bombs
+f - Powerup Flames
+s - Powerup Speed
