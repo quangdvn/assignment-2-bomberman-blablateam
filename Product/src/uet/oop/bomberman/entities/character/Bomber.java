@@ -111,18 +111,54 @@ public class Bomber extends Character {
     protected void calculateMove() {
         // TODO: xử lý nhận tín hiệu điều khiển hướng đi từ _input và gọi move() để thực hiện di chuyển
         // TODO: nhớ cập nhật lại giá trị cờ _moving khi thay đổi trạng thái di chuyển
+        int _xNow = 0,_yNow = 0;
+        //  Calculate the cordinates when key pressed
+        if(_input.up) _yNow--;
+        else if(_input.down) _yNow++;
+        else if(_input.left) _xNow--;
+        else if(_input.right) _xNow++;
+        /*
+            Calculate the moving cordinates
+         */
+        if(_xNow != 0 || _yNow != 0) {
+            move(_xNow * Game.getBomberSpeed(), _yNow * Game.getBomberSpeed());
+            _moving = true;
+        } else {
+            _moving = false;
+        }
     }
-
+    // I cant understand this method :((
     @Override
     public boolean canMove(double x, double y) {
         // TODO: kiểm tra có đối tượng tại vị trí chuẩn bị di chuyển đến và có thể di chuyển tới đó hay không
-        return false;
+        for (int corner = 0; corner < 4; corner++) {                        // colision detection for each corner of the player
+            double _xNext = ((_x + x) + corner % 2 * 11) / Game.TILES_SIZE;     // divide with tiles size to pass to tile coordinate
+            double _yNext = ((_y + y) + corner / 2 * 12 - 13) / Game.TILES_SIZE;// these values are the best from multiple tests
+
+            Entity a = _board.getEntity(_xNext, _yNext, this);
+
+            if(!a.collide(this))
+                return false;
+        }
+        return true;
     }
 
     @Override
-    public void move(double xa, double ya) {
+    public void move(double _xNow, double _yNow) {
         // TODO: sử dụng canMove() để kiểm tra xem có thể di chuyển tới điểm đã tính toán hay không và thực hiện thay đổi tọa độ _x, _y
         // TODO: nhớ cập nhật giá trị _direction sau khi di chuyển
+        if(_xNow > 0) _direction = 1;   // Go right
+        if(_xNow < 0) _direction = 3;   // Go left
+        if(_yNow > 0) _direction = 2;   // Go up
+        if(_yNow < 0) _direction = 0;   // Go down
+
+        if(canMove(0, _yNow)) { //separate the moves for the player can slide when colliding
+            _y += _yNow;
+        }
+
+        if(canMove(_xNow, 0)) {
+            _x += _xNow;
+        }
     }
 
     @Override
