@@ -13,12 +13,12 @@ public abstract class LevelLoader {
 	protected String[] _lineTiles; // brick to build, I guess :))
 	protected Board _board;		   // current screen to add sprites in, I guess :))
 
-	public LevelLoader(Board board, int level) throws LoadLevelException {
+	public LevelLoader(Board board, double level) throws LoadLevelException {
 		_board = board;
 		loadLevel(level);
 	}
 
-	public abstract void loadLevel(int level) throws LoadLevelException;
+	public abstract void loadLevel(double level) throws LoadLevelException;
 
 	public abstract void createEntities();
 

@@ -113,10 +113,22 @@ public class Bomber extends Character {
         // TODO: nhớ cập nhật lại giá trị cờ _moving khi thay đổi trạng thái di chuyển
         int _xNow = 0,_yNow = 0;
         //  Calculate the cordinates when key pressed
-        if(_input.up) _yNow--;
-        else if(_input.down) _yNow++;
-        else if(_input.left) _xNow--;
-        else if(_input.right) _xNow++;
+        if(_input.up) {
+            _yNow--;
+            System.out.println("Up");
+        }
+        else if(_input.down) {
+            _yNow++;
+            System.out.println("Down");
+        }
+        else if(_input.left) {
+            _xNow--;
+            System.out.println("Left");
+        }
+        else if(_input.right) {
+            _xNow++;
+            System.out.println("Right");
+        }
         /*
             Calculate the moving cordinates
          */

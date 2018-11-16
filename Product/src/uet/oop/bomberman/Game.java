@@ -22,7 +22,10 @@ public class Game extends Canvas {
 	public static int SCALE = 3;
 	
 	public static final String TITLE = "BombermanGame";
-	
+
+	/*
+		The next 3 int are the most powerful things to change :))
+	 */
 	private static final int BOMBRATE = 1;
 	private static final int BOMBRADIUS = 1;
 	private static final double BOMBERSPEED = 1.0;

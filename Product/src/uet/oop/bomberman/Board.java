@@ -42,7 +42,7 @@ public class Board implements IRender {
 		_input = input;
 		_screen = screen;
 		
-		loadLevel(1); //start in level 1
+		loadLevel(3.1); //start in level 1
 	}
 	
 	@Override
@@ -86,7 +86,7 @@ public class Board implements IRender {
 		loadLevel(_levelLoader.getLevel() + 1);
 	}
 	
-	public void loadLevel(int level) {
+	public void loadLevel(double level) {
 		_time = Game.TIME;
 		_screenToShow = 2;
 		_game.resetScreenDelay();
