@@ -18,6 +18,7 @@ import java.awt.*;
 public abstract class Enemy extends Character {
 
 	protected int _points;
+    protected int previousDirection;
 	
 	protected double _speed;
 	protected AI _ai;
@@ -74,12 +75,19 @@ public abstract class Enemy extends Character {
 	
 	@Override
 	public void calculateMove() {
-		// TODO: Tính toán hướng đi và di chuyển Enemy theo _ai và cập nhật giá trị cho _direction
-		// TODO: sử dụng canMove() để kiểm tra xem có thể di chuyển tới điểm đã tính toán hay không
-		// TODO: sử dụng move() để di chuyển
-		// TODO: nhớ cập nhật lại giá trị cờ _moving khi thay đổi trạng thái di chuyển
 
-		_direction = _ai.calculateDirection();
+        int possibleDirection = 0;
+        if (canMove(0, 1)) ++possibleDirection;
+        if (canMove(0, -1)) ++possibleDirection;
+        if (canMove(1, 0)) ++possibleDirection;
+        if (canMove(-1, 0)) ++possibleDirection;
+
+        if (!_moving || (previousDirection > 1 && possibleDirection > previousDirection) || _steps < 0) {
+            _direction = _ai.calculateDirection();
+            _steps = MAX_STEPS * 4;
+        }
+
+        previousDirection = possibleDirection;
 
 		int _xNow = 0,_yNow = 0;
 
@@ -89,6 +97,7 @@ public abstract class Enemy extends Character {
 		else if(_direction == 1) _xNow++;
 
 		if(canMove(_xNow, _yNow)) {
+            --_steps;
 			move(_xNow * _speed, _yNow * _speed);
 			_moving = true;
 
