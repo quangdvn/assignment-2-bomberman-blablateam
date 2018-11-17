@@ -8,6 +8,7 @@ import uet.oop.bomberman.entities.bomb.Flame;
 import uet.oop.bomberman.entities.character.Bomber;
 import uet.oop.bomberman.entities.character.Character;
 import uet.oop.bomberman.entities.character.enemy.ai.AI;
+import uet.oop.bomberman.entities.character.enemy.ai.AILow;
 import uet.oop.bomberman.graphics.Screen;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.level.Coordinates;
@@ -67,9 +68,7 @@ public abstract class Enemy extends Character {
 			} else {
 				_sprite = Sprite.movingSprite(Sprite.mob_dead1, Sprite.mob_dead2, Sprite.mob_dead3, _animate, 60);
 			}
-				
 		}
-			
 		screen.renderEntity((int)_x, (int)_y - _sprite.SIZE, this);
 	}
 	
@@ -79,6 +78,23 @@ public abstract class Enemy extends Character {
 		// TODO: sử dụng canMove() để kiểm tra xem có thể di chuyển tới điểm đã tính toán hay không
 		// TODO: sử dụng move() để di chuyển
 		// TODO: nhớ cập nhật lại giá trị cờ _moving khi thay đổi trạng thái di chuyển
+
+		_direction = _ai.calculateDirection();
+
+		int _xNow = 0,_yNow = 0;
+
+		if(_direction == 0) _yNow--;
+		else if(_direction == 2) _yNow++;
+		else if(_direction == 3) _xNow--;
+		else if(_direction == 1) _xNow++;
+
+		if(canMove(_xNow, _yNow)) {
+			move(_xNow * _speed, _yNow * _speed);
+			_moving = true;
+
+		} else {
+			_moving = false;
+		}
 	}
 	
 	@Override
@@ -90,15 +106,44 @@ public abstract class Enemy extends Character {
 	
 	@Override
 	public boolean canMove(double x, double y) {
-		// TODO: kiểm tra có đối tượng tại vị trí chuẩn bị di chuyển đến và có thể di chuyển tới đó hay không
-		return false;
+        double xTile = _x, yTile = _y;
+
+        if(_direction == 0) {
+            yTile = _y - 17 + _sprite.getSize();
+            xTile = _x + _sprite.getSize() / 2;
+
+        } else if(_direction == 1) {
+            yTile = _y - 16 + _sprite.getSize() / 2;
+            xTile = _x + 1;
+
+        } else if(_direction == 2) {
+            yTile = _y - 15;
+            xTile = _x + _sprite.getSize() / 2;
+
+        } else if(_direction == 3) {
+            yTile = _y - 16 + _sprite.getSize() / 2;
+            xTile = _x + _sprite.getSize() - 1;
+        }
+
+        xTile = Coordinates.pixelToTile(xTile);
+        yTile = Coordinates.pixelToTile(yTile);
+
+        Entity a = _board.getEntity(xTile + (int)x, yTile + (int)y, this);
+
+        return a.collide(this);
 	}
 
 	@Override
 	public boolean collide(Entity e) {
-		// TODO: xử lý va chạm với Flame
-		// TODO: xử lý va chạm với Bomber
-		return true;
+        if(e instanceof Flame) {
+            kill();
+            return false;
+        }
+        if(e instanceof Bomber) {
+            ((Bomber) e).kill();
+            return false;
+        }
+        return true;
 	}
 	
 	@Override

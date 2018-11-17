@@ -18,7 +18,7 @@ public class Doll extends Enemy {
 
         _sprite = Sprite.doll_left1;
 
-        _ai = new AILow();
+        _ai = new AILow(this);
         _direction = _ai.calculateDirection();
     }
     @Override

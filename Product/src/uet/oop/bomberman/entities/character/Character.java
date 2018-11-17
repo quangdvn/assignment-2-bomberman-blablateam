@@ -28,6 +28,8 @@ public abstract class Character extends AnimatedEntitiy {
 	@Override
 	public abstract void render(Screen screen);
 
+	public boolean isMoving() { return _moving; }
+
 	/**
 	 * Tính toán hướng đi
 	 */

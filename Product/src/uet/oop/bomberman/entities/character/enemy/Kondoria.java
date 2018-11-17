@@ -19,7 +19,7 @@ public class Kondoria extends Enemy {
 
         _sprite = Sprite.kondoria_left1;
 
-        _ai = new AILow();
+        _ai = new AILow(this);
         _direction = _ai.calculateDirection();
     }
     @Override

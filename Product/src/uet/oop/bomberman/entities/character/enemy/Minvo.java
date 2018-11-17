@@ -19,7 +19,7 @@ public class Minvo extends Enemy {
 
         _sprite = Sprite.minvo_left1;
 
-        _ai = new AILow();
+        _ai = new AILow(this);
         _direction = _ai.calculateDirection();
     }
 
