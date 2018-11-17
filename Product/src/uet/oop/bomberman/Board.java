@@ -42,7 +42,7 @@ public class Board implements IRender {
 		_input = input;
 		_screen = screen;
 		
-		loadLevel(3.1); //start in level 1
+		loadLevel(1.0); //start in level 1
 	}
 	
 	@Override
@@ -119,10 +119,9 @@ public class Board implements IRender {
 	public boolean detectNoEnemies() {
 		int total = 0;
 		for (int i = 0; i < _characters.size(); i++) {
-			if(_characters.get(i) instanceof Bomber == false)
+			if(!(_characters.get(i) instanceof Bomber))
 				++total;
 		}
-		
 		return total == 0;
 	}
 	
@@ -187,10 +186,20 @@ public class Board implements IRender {
 		
 		return null;
 	}
-	
+
+	public Character getCharacterAt(double x, double y) {
+		Iterator<Character> cr = _characters.iterator();
+		Character cur;
+		while(cr.hasNext()) {
+			cur = cr.next();
+			if(cur.getX() == (int)x && cur.getY() == (int)y)
+				return cur;
+		}
+		return null;
+	}
+
 	public Character getCharacterAtExcluding(int x, int y, Character a) {
 		Iterator<Character> itr = _characters.iterator();
-		
 		Character cur;
 		while(itr.hasNext()) {
 			cur = itr.next();

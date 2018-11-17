@@ -19,47 +19,47 @@ public abstract class Enemy extends Character {
 
 	protected int _points;
     protected int previousDirection;
-	
+
 	protected double _speed;
 	protected AI _ai;
 
 	protected final double MAX_STEPS;
 	protected final double rest;
 	protected double _steps;
-	
+
 	protected int _finalAnimation = 30;
 	protected Sprite _deadSprite;
-	
+
 	public Enemy(int x, int y, Board board, Sprite dead, double speed, int points) {
 		super(x, y, board);
-		
+
 		_points = points;
 		_speed = speed;
-		
+
 		MAX_STEPS = Game.TILES_SIZE / _speed;
 		rest = (MAX_STEPS - (int) MAX_STEPS) / MAX_STEPS;
 		_steps = MAX_STEPS;
-		
+
 		_timeAfter = 20;
 		_deadSprite = dead;
 	}
-	
+
 	@Override
 	public void update() {
 		animate();
-		
+
 		if(!_alive) {
 			afterKill();
 			return;
 		}
-		
+
 		if(_alive)
 			calculateMove();
 	}
-	
+
 	@Override
 	public void render(Screen screen) {
-		
+
 		if(_alive)
 			chooseSprite();
 		else {
@@ -72,7 +72,7 @@ public abstract class Enemy extends Character {
 		}
 		screen.renderEntity((int)_x, (int)_y - _sprite.SIZE, this);
 	}
-	
+
 	@Override
 	public void calculateMove() {
 
@@ -105,14 +105,14 @@ public abstract class Enemy extends Character {
 			_moving = false;
 		}
 	}
-	
+
 	@Override
 	public void move(double xa, double ya) {
 		if(!_alive) return;
 		_y += ya;
 		_x += xa;
 	}
-	
+
 	@Override
 	public boolean canMove(double x, double y) {
         double xTile = _x, yTile = _y;
@@ -154,19 +154,19 @@ public abstract class Enemy extends Character {
         }
         return true;
 	}
-	
+
 	@Override
 	public void kill() {
 		if(!_alive) return;
 		_alive = false;
-		
+
 		_board.addPoints(_points);
 
 		Message msg = new Message("+" + _points, getXMessage(), getYMessage(), 2, Color.white, 14);
 		_board.addMessage(msg);
 	}
-	
-	
+
+
 	@Override
 	protected void afterKill() {
 		if(_timeAfter > 0) --_timeAfter;
@@ -176,6 +176,6 @@ public abstract class Enemy extends Character {
 				remove();
 		}
 	}
-	
+
 	protected abstract void chooseSprite();
 }
