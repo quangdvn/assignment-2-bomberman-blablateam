@@ -28,8 +28,6 @@ public abstract class Character extends AnimatedEntitiy {
 	@Override
 	public abstract void render(Screen screen);
 
-	public boolean isMoving() { return _moving; }
-
 	/**
 	 * Calculate the pixel while moving
 	 */

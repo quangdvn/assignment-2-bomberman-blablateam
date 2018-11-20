@@ -5,6 +5,7 @@ import uet.oop.bomberman.Game;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.Message;
 import uet.oop.bomberman.entities.bomb.Flame;
+import uet.oop.bomberman.entities.bomb.FlameSegment;
 import uet.oop.bomberman.entities.character.Bomber;
 import uet.oop.bomberman.entities.character.Character;
 import uet.oop.bomberman.entities.character.enemy.ai.AI;
@@ -18,7 +19,6 @@ import java.awt.*;
 public abstract class Enemy extends Character {
 
 	protected int _points;
-    protected int previousDirection;
 
 	protected double _speed;
 	protected AI _ai;
@@ -76,18 +76,10 @@ public abstract class Enemy extends Character {
 	@Override
 	public void calculateMove() {
 
-        int possibleDirection = 0;
-        if (canMove(0, 1)) ++possibleDirection;
-        if (canMove(0, -1)) ++possibleDirection;
-        if (canMove(1, 0)) ++possibleDirection;
-        if (canMove(-1, 0)) ++possibleDirection;
-
-        if (!_moving || (previousDirection > 1 && possibleDirection > previousDirection) || _steps < 0) {
-            _direction = _ai.calculateDirection();
-            _steps = MAX_STEPS * 4;
-        }
-
-        previousDirection = possibleDirection;
+		if (_steps <= 0) {
+			_direction = _ai.calculateDirection();
+			_steps = MAX_STEPS;
+		}
 
 		int _xNow = 0,_yNow = 0;
 
@@ -97,11 +89,12 @@ public abstract class Enemy extends Character {
 		else if(_direction == 1) _xNow++;
 
 		if(canMove(_xNow, _yNow)) {
-            --_steps;
+            _steps -= 1 + rest;
 			move(_xNow * _speed, _yNow * _speed);
 			_moving = true;
 
 		} else {
+            _steps = 0;
 			_moving = false;
 		}
 	}
@@ -147,6 +140,9 @@ public abstract class Enemy extends Character {
         if(e instanceof Flame) {
             kill();
             return false;
+        }
+        if(e instanceof FlameSegment) {
+            kill();
         }
         if(e instanceof Bomber) {
             ((Bomber) e).kill();

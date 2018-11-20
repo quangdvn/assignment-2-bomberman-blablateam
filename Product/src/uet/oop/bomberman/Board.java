@@ -10,6 +10,7 @@ import uet.oop.bomberman.exceptions.LoadLevelException;
 import uet.oop.bomberman.graphics.IRender;
 import uet.oop.bomberman.graphics.Screen;
 import uet.oop.bomberman.input.Keyboard;
+import uet.oop.bomberman.level.Coordinates;
 import uet.oop.bomberman.level.FileLevelLoader;
 import uet.oop.bomberman.level.LevelLoader;
 
@@ -192,7 +193,8 @@ public class Board implements IRender {
 		Character cur;
 		while(cr.hasNext()) {
 			cur = cr.next();
-			if(cur.getX() == (int)x && cur.getY() == (int)y)
+            if (cur instanceof Bomber) System.out.println(cur.getX() + " " +  cur.getY());
+			if(Coordinates.pixelToTile(cur.getX()) == (int)x && Coordinates.pixelToTile(cur.getY()) == (int)y)
 				return cur;
 		}
 		return null;

@@ -2,8 +2,10 @@ package uet.oop.bomberman.entities.bomb;
 
 import uet.oop.bomberman.Board;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.LayeredEntity;
 import uet.oop.bomberman.entities.character.Bomber;
 import uet.oop.bomberman.entities.character.enemy.Enemy;
+import uet.oop.bomberman.entities.tile.destroyable.Brick;
 import uet.oop.bomberman.graphics.Screen;
 
 public class Flame extends Entity {
@@ -39,19 +41,16 @@ public class Flame extends Entity {
 		/**
 		 * Counting the length of Flame, as the number of flameSegment
 		 */
-		_flameSegments = new FlameSegment[calculatePermitedDistance()];
+		_flameSegments = new FlameSegment[calculatePermittedDistance()];
 
 		/**
 		 * last is the final segment
 		 */
-		boolean last = false;
-		/*
-			Here to create FlameSegment
-		 */
+		boolean last;
 		int x = (int)_x;
 		int y = (int)_y;
 		for (int i = 0; i < _flameSegments.length; i++) {
-			last = i == _flameSegments.length - 1;
+			last = (i == _flameSegments.length - 1);
 
 			switch (_direction) {
 				case 0:
@@ -76,7 +75,7 @@ public class Flame extends Entity {
 	 * Counting the radius of Flame, if it is Brick/Wall, the flame will be cut off
 	 * @return the radius of Flame
 	 */
-	private int calculatePermitedDistance() {
+	private int calculatePermittedDistance() {
 		int radius = 0;
 		int x = (int)_x;
 		int y = (int)_y;
@@ -87,10 +86,13 @@ public class Flame extends Entity {
 			if(_direction == 3) x--;
 
 			Entity a = _board.getEntityAt(x, y);
-
 			if(!a.collide(this)) { //cannot pass through
 				break;
 			}
+            a = _board.getCharacterAt(x, y);
+            if (a != null && !a.collide(this)){
+                break;
+            }
 			++radius;
 		}
 		return radius;
@@ -116,10 +118,10 @@ public class Flame extends Entity {
 
 	@Override
 	public boolean collide(Entity e) {
-		if(e instanceof Bomber) {
+		if (e instanceof Bomber) {
 			((Bomber)e).kill();
 		}
-		if(e instanceof Enemy) {
+		if (e instanceof Enemy) {
 			((Enemy) e).kill();
 		}
 		return true;
