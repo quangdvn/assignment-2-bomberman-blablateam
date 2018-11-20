@@ -193,7 +193,6 @@ public class Board implements IRender {
 		Character cur;
 		while(cr.hasNext()) {
 			cur = cr.next();
-            if (cur instanceof Bomber) System.out.println(cur.getX() + " " +  cur.getY());
 			if(Coordinates.pixelToTile(cur.getX()) == (int)x && Coordinates.pixelToTile(cur.getY()) == (int)y)
 				return cur;
 		}

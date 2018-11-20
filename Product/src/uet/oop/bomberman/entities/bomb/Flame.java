@@ -3,6 +3,7 @@ package uet.oop.bomberman.entities.bomb;
 import uet.oop.bomberman.Board;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.LayeredEntity;
+import uet.oop.bomberman.entities.character.Character;
 import uet.oop.bomberman.entities.character.Bomber;
 import uet.oop.bomberman.entities.character.enemy.Enemy;
 import uet.oop.bomberman.entities.tile.destroyable.Brick;
@@ -85,14 +86,11 @@ public class Flame extends Entity {
 			if(_direction == 2) y++;
 			if(_direction == 3) x--;
 
-			Entity a = _board.getEntityAt(x, y);
-			if(!a.collide(this)) { //cannot pass through
+			Entity a = _board.getEntity(x, y, null);
+
+            if(!a.collide(this)) {
 				break;
 			}
-            a = _board.getCharacterAt(x, y);
-            if (a != null && !a.collide(this)){
-                break;
-            }
 			++radius;
 		}
 		return radius;
