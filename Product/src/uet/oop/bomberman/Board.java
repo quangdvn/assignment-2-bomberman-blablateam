@@ -10,7 +10,6 @@ import uet.oop.bomberman.exceptions.LoadLevelException;
 import uet.oop.bomberman.graphics.IRender;
 import uet.oop.bomberman.graphics.Screen;
 import uet.oop.bomberman.input.Keyboard;
-import uet.oop.bomberman.level.Coordinates;
 import uet.oop.bomberman.level.FileLevelLoader;
 import uet.oop.bomberman.level.LevelLoader;
 
@@ -43,7 +42,7 @@ public class Board implements IRender {
 		_input = input;
 		_screen = screen;
 		
-		loadLevel(1.0); //start in level 1
+		loadLevel(3.1); //start in level 1
 	}
 	
 	@Override
@@ -142,7 +141,7 @@ public class Board implements IRender {
 	
 	public Entity getEntity(double x, double y, Character m) {
 		
-		Entity res = null;
+		Entity res;
 		
 		res = getFlameSegmentAt((int)x, (int)y);
 		if( res != null) return res;
@@ -191,9 +190,10 @@ public class Board implements IRender {
 	public Character getCharacterAt(double x, double y) {
 		Iterator<Character> cr = _characters.iterator();
 		Character cur;
+
 		while(cr.hasNext()) {
 			cur = cr.next();
-			if(Coordinates.pixelToTile(cur.getX()) == (int)x && Coordinates.pixelToTile(cur.getY()) == (int)y)
+			if(cur.getXTile() == (int)x && cur.getYTile() == (int)y)
 				return cur;
 		}
 		return null;

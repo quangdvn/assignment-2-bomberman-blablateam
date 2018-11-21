@@ -81,6 +81,11 @@ public abstract class Enemy extends Character {
 			_steps = MAX_STEPS;
 		}
 
+		if (_direction == -1) {
+			_steps = 0;
+			_moving = false;
+		}
+
 		int _xNow = 0,_yNow = 0;
 
 		if(_direction == 0) _yNow--;

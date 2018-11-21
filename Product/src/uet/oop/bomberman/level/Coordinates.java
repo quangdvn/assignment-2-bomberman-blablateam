@@ -5,7 +5,7 @@ import uet.oop.bomberman.Game;
 public class Coordinates {
 	
 	public static int pixelToTile(double i) {
-		return (int)((i - 1) / Game.TILES_SIZE);
+		return (int)(i / Game.TILES_SIZE);
 	}
 	
 	public static int tileToPixel(int i) {

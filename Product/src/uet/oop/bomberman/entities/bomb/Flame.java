@@ -88,6 +88,9 @@ public class Flame extends Entity {
 
 			Entity a = _board.getEntity(x, y, null);
 
+			if (a instanceof Enemy){
+				++radius;
+			}
             if(!a.collide(this)) {
 				break;
 			}
