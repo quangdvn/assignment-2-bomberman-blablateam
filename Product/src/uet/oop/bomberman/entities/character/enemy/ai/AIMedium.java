@@ -20,31 +20,36 @@ public class AIMedium extends AI {
     Enemy _e;
     Board _board;
     int direction;
+    boolean bombAvoiding;
 
     final int dx[] = {0, 1, -1, 0};
     final int dy[] = {1, 0, 0, -1};
 
-    int[] fValue, gValue;
+    int[][] fValue, gValue;
     int[] cameFrom;
-    boolean[] visited;
+    boolean[][] visited;
     List<Node> visitedNodes = new ArrayList<>();
 
     final int MAX_ARR = 13 * 31;
 
-    public AIMedium(Bomber bomber, Enemy e, Board board) {
+    public AIMedium(Bomber bomber, Enemy e, Board board, boolean bombAvoiding) {
         _bomber = bomber;
         _e = e;
         _board = board;
+        this.bombAvoiding = bombAvoiding;
 
-        fValue = new int[MAX_ARR];
-        gValue = new int[MAX_ARR];
+        fValue = new int[31][13];
+        gValue = new int[31][13];
         cameFrom = new int[MAX_ARR];
-        visited = new boolean[MAX_ARR];
+        visited = new boolean[31][13];
 
-        for (int i = 0; i < MAX_ARR; ++i) {
-            cameFrom[i] = -1;
-            gValue[i] = fValue[i] = MAX_ARR;
-            visited[i] = false;
+        for (int i = 0; i < 31; ++i) {
+            for (int j = 0; j < 13; ++j) {
+                fValue[i][j] = MAX_ARR;
+                gValue[i][j] = MAX_ARR;
+                visited[i][j] = false;
+                cameFrom[position(i, j)] = -1;
+            }
         }
     }
 
@@ -91,27 +96,27 @@ public class AIMedium extends AI {
 
         public int compareTo(Object o) {
             Node p = (Node)o;
-            return fValue[position(xPos, yPos)] - fValue[position(p.xPos, p.yPos)];
+            return fValue[xPos][yPos] - fValue[p.xPos][p.yPos];
         }
     }
 
     int AStar() {
 
-        if (_bomber.getXTile() == _e.getXTile() && _bomber.getYTile() == _e.getYTile()) {
+        int xSource = _e.getXTile();
+        int ySource = _e.getYTile();
+
+        if (_bomber.getXTile() == xSource && _bomber.getYTile() == ySource) {
             return -1;
         }
 
-        PriorityQueue <Node> pQueue = new PriorityQueue<>();
+        PriorityQueue<Node> pQueue = new PriorityQueue<>();
         int has_bomb = -1;
 
-        int xSource = _e.getXTile();
-        int ySource = _e.getYTile();
         Node source = new Node(xSource, ySource);
-
         pQueue.add(source);
         visitedNodes.add(source);
-        gValue[position(xSource, ySource)] = 0;
-        visited[position(xSource, ySource)] = true;
+        gValue[xSource][ySource] = 0;
+        visited[xSource][ySource] = true;
 
         while (!pQueue.isEmpty()) {
             Node current = pQueue.poll();
@@ -123,40 +128,37 @@ public class AIMedium extends AI {
             for (int i = 0; i < 4; ++i) {
                 int nextX = current.xPos + dx[i];
                 int nextY = current.yPos + dy[i];
-                int nextPos = position(nextX, nextY);
-                int newGValue = gValue[position(current.xPos, current.yPos)] + 1;
+                int newGValue = gValue[current.xPos][current.yPos] + 1;
 
                 int blocked = isBlocked(nextX, nextY);
                 if (blocked > 0) {
-                    if (blocked == 2) has_bomb = nextPos;
+                    if (blocked == 2) has_bomb = position(nextX, nextY);
                     continue;
                 }
-                if (visited[nextPos] && newGValue > gValue[nextPos]) {
+                if (visited[nextX][nextY] && newGValue > gValue[nextX][nextY]) {
                     continue;
                 }
 
-                cameFrom[nextPos] = position(current.xPos, current.yPos);
-                gValue[nextPos] = newGValue;
-                fValue[nextPos] = newGValue + heuristicValue(nextX, nextY);
+                cameFrom[position(nextX, nextY)] = position(current.xPos, current.yPos);
+                gValue[nextX][nextY] = newGValue;
+                fValue[nextX][nextY] = newGValue + heuristicValue(nextX, nextY);
 
-                if (!visited[nextPos]) {
+                if (!visited[nextX][nextY]) {
                     Node nextNode = new Node(nextX, nextY);
                     pQueue.add(nextNode);
                     visitedNodes.add(nextNode);
-                    visited[nextPos] = true;
+                    visited[nextX][nextY] = true;
                 }
             }
         }
 
-        // easier AI
-        /*
-        int rand = random.nextInt(4);
-        return position(xSource + dx[rand], ySource + dy[rand]);
-        */
+        if (!bombAvoiding) { // easier AI
+            int rand = random.nextInt(4);
+            return position(xSource + dx[rand], ySource + dy[rand]);
 
-        // impossible AI
-        return findPathIfBlocked(has_bomb);
-
+        } else { // impossible AI
+            return findPathIfBlocked(has_bomb);
+        }
     }
 
     int findPathIfBlocked(int has_bomb) {
@@ -167,8 +169,14 @@ public class AIMedium extends AI {
         }
 
         for (int i = 0; i < 3; ++i) {
+            int xi = adjNodes[i] % 31;
+            int yi = adjNodes[i] / 31;
+
             for (int j = i + 1; j < 4; ++j) {
-                if (fValue[adjNodes[i]] > fValue[adjNodes[j]]){
+                int xj = adjNodes[j] % 31;
+                int yj = adjNodes[j] / 31;
+
+                if (fValue[xi][yi] > fValue[xj][yj]){
                     int temp = adjNodes[i];
                     adjNodes[i] = adjNodes[j];
                     adjNodes[j] = temp;
@@ -210,18 +218,18 @@ public class AIMedium extends AI {
     }
 
     void reset() {
-        for (Node current: visitedNodes) {
-            int currentPos = position(current.xPos, current.yPos);
-            fValue[currentPos] = MAX_ARR;
-            gValue[currentPos] = MAX_ARR;
-            cameFrom[currentPos] = -1;
-            visited[currentPos] = false;
+        for (Node ptr: visitedNodes) {
+            fValue[ptr.xPos][ptr.yPos] = MAX_ARR;
+            gValue[ptr.xPos][ptr.yPos] = MAX_ARR;
+            visited[ptr.xPos][ptr.yPos] = false;
+
+            cameFrom[position(ptr.xPos, ptr.yPos)] = -1;
         }
         visitedNodes.clear();
     }
 
 	@Override
-	public int calculateDirection() {
+    public int calculateDirection() {
         int nextPos = AStar();
         reset();
 
