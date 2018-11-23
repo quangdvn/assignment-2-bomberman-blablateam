@@ -14,7 +14,7 @@ import uet.oop.bomberman.level.Coordinates;
 public class Bomb extends AnimatedEntitiy {
 
 	protected double _timeToExplode = 120; //2 seconds
-	public int _timeAfter = 20;
+	public int _timeAfter = 20;	// time to disappear explosion
 
 	protected Board _board;
 	protected Flame[] _flames = null;
@@ -61,14 +61,14 @@ public class Bomb extends AnimatedEntitiy {
 	}
 
 	public void renderFlames(Screen screen) {
-		for (int i = 0; i < _flames.length; i++) {
-			_flames[i].render(screen);
+		for (Flame flame : _flames) {
+			flame.render(screen);
 		}
 	}
 
 	public void updateFlames() {
-		for (int i = 0; i < _flames.length; i++) {
-			_flames[i].update();
+		for (Flame flame : _flames) {
+			flame.update();
 		}
 	}
 
@@ -88,20 +88,24 @@ public class Bomb extends AnimatedEntitiy {
 		}
 	}
 
+	public void multiExplode() {
+		_timeToExplode = 0;
+	}
+
 	public FlameSegment flameAt(int x, int y) {
 		if(!_exploded) return null;
 
-		for (int i = 0; i < _flames.length; i++) {
-			if(_flames[i] == null) return null;
-			FlameSegment e = _flames[i].flameSegmentAt(x, y);
-			if(e != null) return e;
+		for (Flame flame : _flames) {
+			if (flame == null) return null;
+			FlameSegment e = flame.flameSegmentAt(x, y);
+			if (e != null) return e;
 		}
 		return null;
 	}
 
 	@Override
 	public boolean collide(Entity e) {
-		if(e instanceof Bomber) {
+		if(e instanceof Bomber ) {
 			double diffX = e.getX() - Coordinates.tileToPixel(getX());
 			double diffY = e.getY() - Coordinates.tileToPixel(getY());
 
@@ -110,8 +114,12 @@ public class Bomb extends AnimatedEntitiy {
 			}
 			return _allowedToPassThrough;
 		}
-
-		// TODO: xử lý va chạm với Flame của Bomb khác
+		if(e instanceof Enemy) {
+			return false;
+		}
+		if(e instanceof Flame || e instanceof Bomb) {
+			multiExplode();
+		}
 		return true;
 	}
 }

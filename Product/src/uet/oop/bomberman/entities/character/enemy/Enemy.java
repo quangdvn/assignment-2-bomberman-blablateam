@@ -142,18 +142,16 @@ public abstract class Enemy extends Character {
 
 	@Override
 	public boolean collide(Entity e) {
-        if(e instanceof Flame) {
-            kill();
-            return false;
-        }
-        if(e instanceof FlameSegment) {
-            kill();
-        }
-        if(e instanceof Bomber) {
-            ((Bomber) e).kill();
-            return false;
-        }
-        return true;
+		if(e instanceof Flame) {
+			kill();
+		}
+		if(e instanceof FlameSegment) {
+			kill();
+		}
+		if(e instanceof Bomber) {
+			((Bomber) e).kill();
+		}
+		return true;
 	}
 
 	@Override
