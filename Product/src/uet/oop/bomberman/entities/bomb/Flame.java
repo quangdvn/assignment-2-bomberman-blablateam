@@ -88,10 +88,7 @@ public class Flame extends Entity {
 
 			Entity a = _board.getEntity(x, y, null);
 
-			if (a instanceof Enemy){
-				++radius;
-			}
-            if(!a.collide(this)) {
+			if(!a.collide(this)) {
 				break;
 			}
 			++radius;
@@ -100,9 +97,9 @@ public class Flame extends Entity {
 	}
 	
 	public FlameSegment flameSegmentAt(int x, int y) {
-		for (int i = 0; i < _flameSegments.length; i++) {
-			if(_flameSegments[i].getX() == x && _flameSegments[i].getY() == y)
-				return _flameSegments[i];
+		for (FlameSegment flameSegment : _flameSegments) {
+			if (flameSegment.getX() == x && flameSegment.getY() == y)
+				return flameSegment;
 		}
 		return null;
 	}
@@ -112,18 +109,15 @@ public class Flame extends Entity {
 	
 	@Override
 	public void render(Screen screen) {
-		for (int i = 0; i < _flameSegments.length; i++) {
-			_flameSegments[i].render(screen);
+		for (FlameSegment flameSegment : _flameSegments) {
+			flameSegment.render(screen);
 		}
 	}
 
 	@Override
 	public boolean collide(Entity e) {
-		if (e instanceof Bomber) {
-			((Bomber)e).kill();
-		}
-		if (e instanceof Enemy) {
-			((Enemy) e).kill();
+		if (e instanceof Bomber || e instanceof Enemy) {
+			((Character) e).kill();
 		}
 		return true;
 	}

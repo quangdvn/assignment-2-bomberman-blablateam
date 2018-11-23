@@ -12,7 +12,6 @@ public class FlameSegment extends Entity {
 	protected boolean _last;
 
 	/**
-	 *
 	 * @param x
 	 * @param y
 	 * @param direction

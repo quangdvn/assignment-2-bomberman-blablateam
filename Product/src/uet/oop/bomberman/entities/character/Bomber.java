@@ -42,7 +42,7 @@ public class Bomber extends Character {
             return;
         }
 
-        if (_timeBetweenPutBombs < -7500) _timeBetweenPutBombs = 0;
+        if (_timeBetweenPutBombs < 0) _timeBetweenPutBombs = 0;
         else _timeBetweenPutBombs--;
 
         animate();
@@ -59,7 +59,8 @@ public class Bomber extends Character {
         if (_alive)
             chooseSprite();
         else
-            _sprite = Sprite.player_dead1;
+            //_sprite = Sprite.player_dead1;
+            _sprite = Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2, Sprite.player_dead3, _animate,20);
 
         screen.renderEntity((int) _x, (int) _y - _sprite.SIZE, this);
     }
@@ -83,7 +84,7 @@ public class Bomber extends Character {
             int curY = Coordinates.pixelToTile( (_y + _sprite.getSize() / 2) - _sprite.getSize() ); //subtract half player height and minus 1 y position
             placeBomb(curX,curY);
             Game.addBombRate(-1);
-            _timeBetweenPutBombs = 30;
+            _timeBetweenPutBombs = 10;
         }
     }
 
