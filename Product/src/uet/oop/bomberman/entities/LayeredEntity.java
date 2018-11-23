@@ -4,6 +4,7 @@ import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import uet.oop.bomberman.entities.bomb.Flame;
 import uet.oop.bomberman.entities.character.Bomber;
 import uet.oop.bomberman.entities.tile.destroyable.DestroyableTile;
+import uet.oop.bomberman.entities.tile.item.Item;
 import uet.oop.bomberman.graphics.Screen;
 import java.util.LinkedList;
 
@@ -58,15 +59,12 @@ public class LayeredEntity extends Entity {
 	
 	@Override
 	public boolean collide(Entity e) {
-
-        Entity topE = getTopEntity();
-
-        if (topE instanceof DestroyableTile) {
+		Entity topE = getTopEntity();
+        if (topE instanceof DestroyableTile || topE instanceof Item) {
             boolean collided = topE.collide(e);
             clearRemoved();
             return collided;
         }
         return true;
 	}
-
 }
