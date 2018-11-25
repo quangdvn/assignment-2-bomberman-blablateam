@@ -7,7 +7,6 @@ import uet.oop.bomberman.entities.bomb.Bomb;
 import uet.oop.bomberman.entities.bomb.Flame;
 import uet.oop.bomberman.entities.bomb.FlameSegment;
 import uet.oop.bomberman.entities.character.enemy.Enemy;
-import uet.oop.bomberman.entities.tile.destroyable.Brick;
 import uet.oop.bomberman.entities.tile.item.Item;
 import uet.oop.bomberman.graphics.Screen;
 import uet.oop.bomberman.graphics.Sprite;
@@ -22,7 +21,7 @@ public class Bomber extends Character {
 
     private List<Bomb> _bombs;
     protected Keyboard _input;
-    public static List<Item> powerUp = new ArrayList<Item>();
+    public static List<Item> powerUp = new ArrayList<>();   // Store every item collected
     /**
      * nếu giá trị này < 0 thì cho phép đặt đối tượng Bomb tiếp theo,
      * cứ mỗi lần đặt 1 Bomb mới, giá trị này sẽ được reset về 0 và giảm dần trong mỗi lần update()
@@ -61,8 +60,7 @@ public class Bomber extends Character {
         if (_alive)
             chooseSprite();
         else
-            //_sprite = Sprite.player_dead1;
-            _sprite = Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2, Sprite.player_dead3, _animate,20);
+            _sprite = Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2, Sprite.player_dead3, _animate,40);
 
         screen.renderEntity((int) _x, (int) _y - _sprite.SIZE, this);
     }

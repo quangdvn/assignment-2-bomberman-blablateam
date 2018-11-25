@@ -9,7 +9,7 @@ import uet.oop.bomberman.exceptions.LoadLevelException;
 public abstract class LevelLoader {
 
 	protected int _width = 20, _height = 20; // default values just for testing
-	protected int _level;
+	protected double _level;
 	protected String[] _lineTiles; // brick to build, I guess :))
 	protected Board _board;		   // current screen to add sprites in, I guess :))
 
@@ -30,7 +30,7 @@ public abstract class LevelLoader {
 		return _height;
 	}
 
-	public int getLevel() {
+	public double getLevel() {
 		return _level;
 	}
 
