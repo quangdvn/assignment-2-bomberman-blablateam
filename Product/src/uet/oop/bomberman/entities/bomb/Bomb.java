@@ -11,6 +11,8 @@ import uet.oop.bomberman.graphics.Screen;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.level.Coordinates;
 
+import static uet.oop.bomberman.sound.Sound.playExplosion;
+
 public class Bomb extends AnimatedEntitiy {
 
 	protected double _timeToExplode = 120; //2 seconds
@@ -76,6 +78,7 @@ public class Bomb extends AnimatedEntitiy {
 	 * Handle the explosion
 	 */
 	protected void explode() {
+		playExplosion();
 		_exploded = true;
 		_allowedToPassThrough = true;
 		Character a = _board.getCharacterAt(_x, _y);
