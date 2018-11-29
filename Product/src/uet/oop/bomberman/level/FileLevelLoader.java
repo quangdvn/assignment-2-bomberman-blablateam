@@ -62,8 +62,8 @@ public class FileLevelLoader extends LevelLoader {
 	@Override
 	public void createEntities() {
 
-		for(int y = 0; y < _height ; y++ ) {
-			for(int x = 0; x < _width ; x++) {
+		for (int y = 0; y < _height ; y++ ) {
+			for (int x = 0; x < _width ; x++) {
 
 				int pos = x + y * _width;
 				char printSprite = _map[y][x];
@@ -96,7 +96,7 @@ public class FileLevelLoader extends LevelLoader {
                         break;
 
                     case 'x':
-                        _board.addEntity(pos, new LayeredEntity(x, y, new Grass(x, y, Sprite.grass), new Portal(x, y, Sprite.portal), new Brick(x, y, Sprite.brick)));
+                        _board.addEntity(pos, new LayeredEntity(x, y, new Grass(x, y, Sprite.grass), new Portal(x, y, Sprite.portal, _board), new Brick(x, y, Sprite.brick)));
                         break;
 
 					case '1':
@@ -124,8 +124,23 @@ public class FileLevelLoader extends LevelLoader {
 						_board.addCharacter(new Kondoria(Coordinates.tileToPixel(x), Coordinates.tileToPixel(y) + Game.TILES_SIZE, _board));
 						break;
 
+					case '6':
+						_board.addEntity(pos, new Grass(x, y, Sprite.grass));
+						_board.addCharacter(new Ovape(Coordinates.tileToPixel(x), Coordinates.tileToPixel(y) + Game.TILES_SIZE, _board));
+						break;
+
+					case '7':
+						_board.addEntity(pos, new Grass(x, y, Sprite.grass));
+						_board.addCharacter(new Pontan(Coordinates.tileToPixel(x), Coordinates.tileToPixel(y) + Game.TILES_SIZE, _board));
+						break;
+
+					case '8':
+						_board.addEntity(pos, new Grass(x, y, Sprite.grass));
+						_board.addCharacter(new Pass(Coordinates.tileToPixel(x), Coordinates.tileToPixel(y) + Game.TILES_SIZE, _board));
+						break;
+
 					default:
-						_board.addEntity(pos, new Grass(x, y, Sprite.grass) );
+						_board.addEntity(pos, new Grass(x, y, Sprite.grass));
 						break;
 				}
 			}

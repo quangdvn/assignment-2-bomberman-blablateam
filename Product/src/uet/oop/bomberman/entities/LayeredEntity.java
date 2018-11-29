@@ -3,6 +3,7 @@ package uet.oop.bomberman.entities;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import uet.oop.bomberman.entities.bomb.Flame;
 import uet.oop.bomberman.entities.character.Bomber;
+import uet.oop.bomberman.entities.tile.Portal;
 import uet.oop.bomberman.entities.tile.destroyable.DestroyableTile;
 import uet.oop.bomberman.entities.tile.item.Item;
 import uet.oop.bomberman.graphics.Screen;
@@ -65,6 +66,9 @@ public class LayeredEntity extends Entity {
             clearRemoved();
             return collided;
         }
+		if (topE instanceof Portal) {
+			return topE.collide(e);
+		}
         return true;
 	}
 }

@@ -3,12 +3,16 @@ package uet.oop.bomberman.entities.character.enemy;
 import uet.oop.bomberman.Board;
 import uet.oop.bomberman.Game;
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.LayeredEntity;
 import uet.oop.bomberman.entities.Message;
+import uet.oop.bomberman.entities.bomb.Bomb;
 import uet.oop.bomberman.entities.bomb.Flame;
 import uet.oop.bomberman.entities.bomb.FlameSegment;
 import uet.oop.bomberman.entities.character.Bomber;
 import uet.oop.bomberman.entities.character.Character;
 import uet.oop.bomberman.entities.character.enemy.ai.AI;
+import uet.oop.bomberman.entities.tile.Grass;
+import uet.oop.bomberman.entities.tile.item.FlameItem;
 import uet.oop.bomberman.graphics.Screen;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.level.Coordinates;
@@ -104,35 +108,35 @@ public abstract class Enemy extends Character {
 	}
 
 	@Override
-	public void move(double xa, double ya) {
+	public void move(double dx, double dy) {
 		if(!_alive) return;
-		_y += ya;
-		_x += xa;
+		_x += dx;
+		_y += dy;
 	}
 
 	@Override
 	public boolean canMove(double x, double y) {
         double xTile = _x, yTile = _y;
 
-        if(_direction == 0) {
-            yTile = _y - 17 + _sprite.getSize();
-            xTile = _x + _sprite.getSize() / 2;
+		if(_direction == 0) {
+			yTile = _y - 17 + _sprite.getSize();
+			xTile = _x + _sprite.getSize() / 2;
 
-        } else if(_direction == 1) {
-            yTile = _y - 16 + _sprite.getSize() / 2;
-            xTile = _x + 1;
+		} else if(_direction == 1) {
+			yTile = _y - 16 + _sprite.getSize() / 2;
+			xTile = _x + 1;
 
-        } else if(_direction == 2) {
-            yTile = _y - 15;
-            xTile = _x + _sprite.getSize() / 2;
+		} else if(_direction == 2) {
+			yTile = _y - 15;
+			xTile = _x + _sprite.getSize() / 2;
 
-        } else if(_direction == 3) {
-            yTile = _y - 16 + _sprite.getSize() / 2;
-            xTile = _x + _sprite.getSize() - 1;
-        }
+		} else if(_direction == 3) {
+			yTile = _y - 16 + _sprite.getSize() / 2;
+			xTile = _x + _sprite.getSize() - 1;
+		}
 
-        xTile = Coordinates.pixelToTile(xTile);
-        yTile = Coordinates.pixelToTile(yTile);
+		xTile = Coordinates.pixelToTile(xTile);
+		yTile = Coordinates.pixelToTile(yTile);
 
         Entity a = _board.getEntity(xTile + (int)x, yTile + (int)y, this);
 
@@ -142,13 +146,21 @@ public abstract class Enemy extends Character {
 	@Override
 	public boolean collide(Entity e) {
 		if(e instanceof Flame) {
-			kill();
+			if (!(this instanceof Doll) || !((Doll)this).isImmortal() ) {
+				kill();
+			}
 		}
 		if(e instanceof FlameSegment) {
-			kill();
+			if (!(this instanceof Doll) || !((Doll)this).isImmortal() ) {
+				kill();
+			}
 		}
 		if(e instanceof Bomber) {
-			((Bomber) e).kill();
+			if (((Bomber) e).isImmortal()) {
+				return false;
+			} else {
+				((Bomber) e).kill();
+			}
 		}
 		return true;
 	}
@@ -170,8 +182,21 @@ public abstract class Enemy extends Character {
 		if(_timeAfter > 0) --_timeAfter;
 		else {
 			if(_finalAnimation > 0) --_finalAnimation;
-			else
+			else {
+				if (this instanceof Pass) {
+					int xTile = getXTile();
+					int yTile = getYTile();
+					Entity e = _board.getEntityAt(xTile, yTile);
+
+					if (e instanceof LayeredEntity) {
+						((LayeredEntity)e).addBeforeTop(new FlameItem(xTile, yTile, Sprite.powerup_flames));
+					} else {
+						e.remove();
+						_board.addEntity(xTile + yTile * 31, new LayeredEntity(xTile, yTile, new Grass(xTile, yTile, Sprite.grass),  new FlameItem(xTile, yTile, Sprite.powerup_flames)));
+					}
+				}
 				remove();
+			}
 		}
 	}
 

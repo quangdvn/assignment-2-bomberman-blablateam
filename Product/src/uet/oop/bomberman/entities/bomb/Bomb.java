@@ -10,13 +10,12 @@ import uet.oop.bomberman.entities.character.enemy.Enemy;
 import uet.oop.bomberman.graphics.Screen;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.level.Coordinates;
-
-import static uet.oop.bomberman.sound.Sound.playExplosion;
+import uet.oop.bomberman.sound.Sound;
 
 public class Bomb extends AnimatedEntitiy {
 
 	protected double _timeToExplode = 120; //2 seconds
-	public int _timeAfter = 20;	// time to disappear explosion
+	public int _timeAfter = 21;	// time to disappear explosion
 
 	protected Board _board;
 	protected Flame[] _flames = null;
@@ -51,7 +50,7 @@ public class Bomb extends AnimatedEntitiy {
 	@Override
 	public void render(Screen screen) {
 		if(_exploded) {
-			_sprite =  Sprite.bomb_exploded2;
+			_sprite =  Sprite.movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1, Sprite.bomb_exploded2, _animate, 21);
 			renderFlames(screen);
 		} else
 			_sprite = Sprite.movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2, _animate, 60);
@@ -78,13 +77,20 @@ public class Bomb extends AnimatedEntitiy {
 	 * Handle the explosion
 	 */
 	protected void explode() {
-		playExplosion();
+		Sound.play(Sound.explosion);
+		_animate = 0;
 		_exploded = true;
 		_allowedToPassThrough = true;
 		Character a = _board.getCharacterAt(_x, _y);
-			if(a != null)  {
-				a.kill();
+		if(a != null && !((Bomber)a).isImmortal()) {
+			a.kill();
+		}
+		for (Bomb b: _board.getBombs()) {
+			if (b.getX() == (int)_x && b.getY() == (int)_y) {
+				b.multiExplode();
 			}
+		}
+
 		_flames = new Flame[4];
 			for (int i = 0; i < _flames.length; i++) {
 			_flames[i] = new Flame((int)_x, (int)_y, i, Game.getBombRadius(), _board);
@@ -108,19 +114,20 @@ public class Bomb extends AnimatedEntitiy {
 
 	@Override
 	public boolean collide(Entity e) {
-		if(e instanceof Bomber ) {
+
+		if(e instanceof Bomber) {
 			double diffX = e.getX() - Coordinates.tileToPixel(getX());
 			double diffY = e.getY() - Coordinates.tileToPixel(getY());
 
-			if(!(diffX >= -10 && diffX < 16 && diffY >= 1 && diffY <= 28)) { // See if the bomber has already moved
-				_allowedToPassThrough = false;								 // out of the bomb
+			if(diffX < -10 || diffX >= 16 || diffY < 1 || diffY > 28) { // See if the bomber has already moved
+				_allowedToPassThrough = false;							// out of the bomb
 			}
 			return _allowedToPassThrough;
 		}
 		if(e instanceof Enemy) {
 			return false;
 		}
-		if(e instanceof Flame || e instanceof Bomb) {
+		if(e instanceof Flame) {
 			multiExplode();
 		}
 		return true;

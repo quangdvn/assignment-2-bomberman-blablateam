@@ -1,6 +1,8 @@
 package uet.oop.bomberman.entities.tile;
 
 import uet.oop.bomberman.entities.Entity;
+import uet.oop.bomberman.entities.character.enemy.Kondoria;
+import uet.oop.bomberman.entities.character.enemy.Ovape;
 import uet.oop.bomberman.graphics.Screen;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.level.Coordinates;
@@ -23,6 +25,9 @@ public abstract class Tile extends Entity {
 	 */
 	@Override
 	public boolean collide(Entity e) {
+		if ((e instanceof Kondoria || e instanceof Ovape) && _x > 0 && _y > 0 && _x < 30 && _y < 12) {
+			return true;
+		}
 		return false;
 	}
 	

@@ -17,6 +17,7 @@ public class Sprite {
 	| Board sprites
 	|--------------------------------------------------------------------------
 	 */
+	public static Sprite empty = new Sprite(16, 15, 15, SpriteSheet.tiles, 16, 16);
 	public static Sprite grass = new Sprite(16, 6, 0, SpriteSheet.tiles, 16, 16);
 	public static Sprite brick = new Sprite(16, 7, 0, SpriteSheet.tiles, 16, 16);
 	public static Sprite wall = new Sprite(16, 5, 0, SpriteSheet.tiles, 16, 16);
@@ -107,6 +108,39 @@ public class Sprite {
 	public static Sprite kondoria_right3 = new Sprite(16, 11, 7, SpriteSheet.tiles, 16, 16);
 	
 	public static Sprite kondoria_dead = new Sprite(16, 10, 8, SpriteSheet.tiles, 16, 16);
+
+	//Ovape
+	public static Sprite ovape_left1 = new Sprite(16, 6, 5, SpriteSheet.tiles, 16, 16);
+	public static Sprite ovape_left2 = new Sprite(16, 6, 6, SpriteSheet.tiles, 16, 16);
+	public static Sprite ovape_left3 = new Sprite(16, 6, 7, SpriteSheet.tiles, 16, 16);
+
+	public static Sprite ovape_right1 = new Sprite(16, 7, 5, SpriteSheet.tiles, 16, 16);
+	public static Sprite ovape_right2 = new Sprite(16, 7, 6, SpriteSheet.tiles, 16, 16);
+	public static Sprite ovape_right3 = new Sprite(16, 7, 7, SpriteSheet.tiles, 16, 16);
+
+	public static Sprite ovape_dead = new Sprite(16, 6, 8, SpriteSheet.tiles, 16, 16);
+
+	//Pontan
+	public static Sprite pontan_left1 = new Sprite(16, 12, 5, SpriteSheet.tiles, 16, 16);
+	public static Sprite pontan_left2 = new Sprite(16, 12, 6, SpriteSheet.tiles, 16, 16);
+	public static Sprite pontan_left3 = new Sprite(16, 12, 7, SpriteSheet.tiles, 16, 16);
+
+	public static Sprite pontan_right1 = new Sprite(16, 13, 5, SpriteSheet.tiles, 16, 16);
+	public static Sprite pontan_right2 = new Sprite(16, 13, 6, SpriteSheet.tiles, 16, 16);
+	public static Sprite pontan_right3 = new Sprite(16, 13, 7, SpriteSheet.tiles, 16, 16);
+
+	public static Sprite pontan_dead = new Sprite(16, 12, 8, SpriteSheet.tiles, 16, 16);
+
+	//Pass
+	public static Sprite pass_left1 = new Sprite(16, 4, 5, SpriteSheet.tiles, 16, 16);
+	public static Sprite pass_left2 = new Sprite(16, 4, 6, SpriteSheet.tiles, 16, 16);
+	public static Sprite pass_left3 = new Sprite(16, 4, 7, SpriteSheet.tiles, 16, 16);
+
+	public static Sprite pass_right1 = new Sprite(16, 5, 5, SpriteSheet.tiles, 16, 16);
+	public static Sprite pass_right2 = new Sprite(16, 5, 6, SpriteSheet.tiles, 16, 16);
+	public static Sprite pass_right3 = new Sprite(16, 5, 7, SpriteSheet.tiles, 16, 16);
+
+	public static Sprite pass_dead = new Sprite(16, 4, 8, SpriteSheet.tiles, 16, 16);
 	
 	//ALL
 	public static Sprite mob_dead1 = new Sprite(16, 15, 0, SpriteSheet.tiles, 16, 16);
@@ -211,7 +245,7 @@ public class Sprite {
 	public static Sprite movingSprite(Sprite normal, Sprite x1, Sprite x2, int animate, int time) {
 		int calc = animate % time;
 		int diff = time / 3;
-		
+
 		if(calc < diff) {
 			return normal;
 		}
@@ -221,6 +255,52 @@ public class Sprite {
 		}
 			
 		return x2;
+	}
+
+	public static Sprite movingSprite(Sprite normal, Sprite x1, Sprite x2, Sprite x3, int animate, int time) {
+		int calc = animate % time;
+		int diff = time / 4;
+
+		if(calc < diff) {
+			return normal;
+		}
+
+		if(calc < diff * 2) {
+			return x1;
+		}
+
+		if(calc < diff * 3) {
+			return x2;
+		}
+
+		return x3;
+	}
+
+	public static Sprite movingSprite(Sprite normal, Sprite x1, Sprite x2, Sprite x3, Sprite x4, Sprite x5, int animate, int time) {
+		int calc = animate % time;
+		int diff = time / 4;
+
+		if(calc < diff) {
+			return normal;
+		}
+
+		if(calc < diff * 2) {
+			return x1;
+		}
+
+		if(calc < diff * 3) {
+			return x2;
+		}
+
+		if(calc < diff * 4) {
+			return x3;
+		}
+
+		if(calc < diff * 5) {
+			return x4;
+		}
+
+		return x5;
 	}
 	
 	public static Sprite movingSprite(Sprite x1, Sprite x2, int animate, int time) {
@@ -234,6 +314,14 @@ public class Sprite {
 
 	public int getPixel(int i) {
 		return _pixels[i];
+	}
+
+	public int getRealWidth(){
+		return _realWidth;
+	}
+
+	public int getRealHeight(){
+		return _realHeight;
 	}
 
 }

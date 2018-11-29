@@ -5,6 +5,7 @@ import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.LayeredEntity;
 import uet.oop.bomberman.entities.character.Character;
 import uet.oop.bomberman.entities.character.Bomber;
+import uet.oop.bomberman.entities.character.enemy.Doll;
 import uet.oop.bomberman.entities.character.enemy.Enemy;
 import uet.oop.bomberman.entities.tile.destroyable.Brick;
 import uet.oop.bomberman.graphics.Screen;
@@ -105,7 +106,11 @@ public class Flame extends Entity {
 	}
 
 	@Override
-	public void update() {}
+	public void update() {
+		for (FlameSegment flameSegment: _flameSegments) {
+			flameSegment.update();
+		}
+	}
 	
 	@Override
 	public void render(Screen screen) {
@@ -116,8 +121,16 @@ public class Flame extends Entity {
 
 	@Override
 	public boolean collide(Entity e) {
-		if (e instanceof Bomber || e instanceof Enemy) {
-			((Character) e).kill();
+		if (e instanceof Bomber && !((Bomber)e).isImmortal()) {
+			((Bomber)e).kill();
+		}
+		if (e instanceof Enemy) {
+			if (!(e instanceof Doll)) {
+				((Enemy)e).kill();
+
+			} else if (!((Doll)e).isImmortal()) {
+				((Doll)e).kill();
+			}
 		}
 		return true;
 	}

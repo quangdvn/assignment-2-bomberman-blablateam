@@ -110,7 +110,7 @@ public class AIMedium extends AI {
         }
 
         PriorityQueue<Node> pQueue = new PriorityQueue<>();
-        int has_bomb = -1;
+        List<Integer> blockedBombs = new ArrayList<>();
 
         Node source = new Node(xSource, ySource);
         pQueue.add(source);
@@ -132,7 +132,7 @@ public class AIMedium extends AI {
 
                 int blocked = isBlocked(nextX, nextY);
                 if (blocked > 0) {
-                    if (blocked == 2) has_bomb = position(nextX, nextY);
+                    if (blocked == 2) blockedBombs.add(position(nextX, nextY));
                     continue;
                 }
                 if (visited[nextX][nextY] && newGValue > gValue[nextX][nextY]) {
@@ -152,16 +152,16 @@ public class AIMedium extends AI {
             }
         }
 
-        if (!bombAvoiding) { // easier AI
+        if (!bombAvoiding) {
             int rand = random.nextInt(4);
             return position(xSource + dx[rand], ySource + dy[rand]);
 
-        } else { // impossible AI
-            return findPathIfBlocked(has_bomb);
+        } else {
+            return findPathIfBlocked(blockedBombs);
         }
     }
 
-    int findPathIfBlocked(int has_bomb) {
+    int findPathIfBlocked(List<Integer> blockedBombs) {
 
         int[] adjNodes = new int[4];
         for (int i = 0; i < 4; ++i) {
@@ -184,22 +184,32 @@ public class AIMedium extends AI {
             }
         }
 
-        if (has_bomb == -1) {
+        if (blockedBombs.isEmpty()) {
             return adjNodes[0];
         }
 
-        int xBomb = has_bomb % 31;
-        int yBomb = has_bomb / 31;
+
         int nextPos = -2;
 
         for (int i = 0; i < 4; ++i) {
             int nextX = adjNodes[i] % 31;
             int nextY = adjNodes[i] / 31;
 
-            if (nextX == xBomb && Math.abs(nextY - yBomb) <= Game.getBombRadius()) {
-                continue;
+            boolean dangerous = false;
+            for (Integer bombPos: blockedBombs) {
+                int xBomb = bombPos % 31;
+                int yBomb = bombPos / 31;
+
+                if (nextX == xBomb && Math.abs(nextY - yBomb) <= Game.getBombRadius()) {
+                    dangerous = true;
+                    break;
+                }
+                if (nextY == yBomb && Math.abs(nextX - xBomb) <= Game.getBombRadius()) {
+                    dangerous = true;
+                    break;
+                }
             }
-            if (nextY == yBomb && Math.abs(nextX - xBomb) <= Game.getBombRadius()) {
+            if (dangerous) {
                 continue;
             }
             nextPos = adjNodes[i];
@@ -230,6 +240,10 @@ public class AIMedium extends AI {
 
 	@Override
     public int calculateDirection() {
+        if (_bomber.isImmortal()) {
+            return random.nextInt(4);
+        }
+
         int nextPos = AStar();
         reset();
 

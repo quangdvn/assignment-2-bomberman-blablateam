@@ -92,12 +92,22 @@ public class Screen {
 		Font font = new Font("Comic Sans MS", Font.PLAIN, 20 * Game.SCALE);
 		g.setFont(font);
 		g.setColor(Color.white);
-		drawCenteredString("GAME OVER", getRealWidth(), getRealHeight(), g);
+		drawCenteredString("GAME OVER", getRealWidth(), getRealHeight() - 200, g);
 		
 		font = new Font("Comic Sans MS", Font.PLAIN, 10 * Game.SCALE);
 		g.setFont(font);
 		g.setColor(Color.yellow);
-		drawCenteredString("POINTS: " + points, getRealWidth(), getRealHeight() + (Game.TILES_SIZE * 2) * Game.SCALE, g);
+		drawCenteredString("POINTS: " + points, getRealWidth(), getRealHeight() - 100, g);
+
+		font = new Font("Comic Sans MS", Font.PLAIN, 15 * Game.SCALE);
+		g.setFont(font);
+		g.setColor(Color.green);
+		drawCenteredString("Y: RETRY", getRealWidth() - 250, getRealHeight() + 200, g);
+
+		font = new Font("Comic Sans MS", Font.PLAIN, 15 * Game.SCALE);
+		g.setFont(font);
+		g.setColor(Color.green);
+		drawCenteredString("N: EXIT", getRealWidth() + 300, getRealHeight() + 200, g);
 	}
 
 	public void drawChangeLevel(Graphics g, double level) {
@@ -106,9 +116,8 @@ public class Screen {
 		Font font = new Font("Comic Sans MS", Font.PLAIN, 20 * Game.SCALE);
 		g.setFont(font);
 		g.setColor(Color.white);
-		if(level == 3.1) drawCenteredString("BONUS LEVEL", getRealWidth(), getRealHeight(), g);	// Dont know why it
-		else drawCenteredString("LEVEL " + (int)level, getRealWidth(), getRealHeight(), g);		// doesnt display
-																									// "BONUS LEVEL" :((
+		drawCenteredString("LEVEL " + (int)level, getRealWidth(), getRealHeight(), g);
+
 	}
 	
 	public void drawPaused(Graphics g) {
