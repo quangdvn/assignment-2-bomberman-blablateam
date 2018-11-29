@@ -12,13 +12,12 @@ import uet.oop.bomberman.graphics.Screen;
 import uet.oop.bomberman.input.Keyboard;
 import uet.oop.bomberman.level.FileLevelLoader;
 import uet.oop.bomberman.level.LevelLoader;
+import uet.oop.bomberman.sound.Sound;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import static uet.oop.bomberman.sound.Sound.*;
 
 /**
  * Quản lý thao tác điều khiển, load level, render các màn hình của game
@@ -44,7 +43,7 @@ public class Board implements IRender {
 		_input = input;
 		_screen = screen;
 		
-		loadLevel(3.1); //start in level 1
+		loadLevel(1.0); //start in level 1
 	}
 	
 	@Override
@@ -85,12 +84,18 @@ public class Board implements IRender {
 	}
 	
 	public void nextLevel() {
-		loadLevel(_levelLoader.getLevel() + 1);
+		double currentLevel = _levelLoader.getLevel();
+		if (currentLevel == 6.0) {
+			endGame();
+		} else {
+			loadLevel(currentLevel + 1);
+		}
 	}
 	
 	public void loadLevel(double level) {
 		_time = Game.TIME;
 		_screenToShow = 2;
+		Sound.closeAllPlayers();
 		_game.resetScreenDelay();
 		_game.pause();
 		_characters.clear();
@@ -101,7 +106,8 @@ public class Board implements IRender {
 			_levelLoader = new FileLevelLoader(this, level);
 			_entities = new Entity[_levelLoader.getHeight() * _levelLoader.getWidth()];
 			_levelLoader.createEntities();
-			playStageTheme();
+			Sound.playStageTheme();
+
 		} catch (LoadLevelException e) {
 			endGame();
 		}
@@ -113,14 +119,13 @@ public class Board implements IRender {
 	}
 	
 	public void endGame() {
-		playEnd();
+		Sound.playEnd();
 		_screenToShow = 1;
 		_game.resetScreenDelay();
 		_game.pause();
 	}
 	
 	public boolean detectNoEnemies() {
-		playFindExit();
 		int total = 0;
 		for (int i = 0; i < _characters.size(); i++) {
 			if(!(_characters.get(i) instanceof Bomber))
@@ -144,7 +149,6 @@ public class Board implements IRender {
 	}
 	
 	public Entity getEntity(double x, double y, Character m) {
-		
 		Entity res;
 		
 		res = getFlameSegmentAt((int)x, (int)y);

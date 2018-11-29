@@ -3,6 +3,7 @@ package uet.oop.bomberman;
 import uet.oop.bomberman.graphics.Screen;
 import uet.oop.bomberman.gui.Frame;
 import uet.oop.bomberman.input.Keyboard;
+import uet.oop.bomberman.sound.Sound;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
@@ -22,9 +23,8 @@ public class Game extends Canvas {
 	public static int SCALE = 3;
 	
 	public static final String TITLE = "BombermanGame";
-	/*
-		The next 3 int are the most powerful things to change :))
-	 */
+
+	public static final int BOMBERLIVES = 5;
 	private static final int BOMBRATE = 1;
 	private static final int BOMBRADIUS = 1;
 	private static final double BOMBERSPEED = 1.0;
@@ -36,8 +36,8 @@ public class Game extends Canvas {
 
 	protected static int bombRate = BOMBRATE;
 	protected static int bombRadius = BOMBRADIUS;
+	protected static int bomberLives = BOMBERLIVES;
 	protected static double bomberSpeed = BOMBERSPEED;
-	
 	
 	protected int _screenDelay = SCREENDELAY;
 	
@@ -131,9 +131,19 @@ public class Game extends Canvas {
 			}
 			
 			if(_paused) {
+				if (_board.getShow() == 1) {
+					_input.update();
+
+					if (_input.retry) {
+						_board.loadLevel(1.0);
+					} else if (_input.exit) {
+						System.exit(0);
+					}
+				}
 				if(_screenDelay <= 0) {
 					_board.setShow(-1);
 					_paused = false;
+					//Sound.playStageTheme();
 				}
 					
 				renderScreen();
@@ -146,6 +156,7 @@ public class Game extends Canvas {
 			if(System.currentTimeMillis() - timer > 1000) {
 				_frame.setTime(_board.subtractTime());
 				_frame.setPoints(_board.getPoints());
+				_frame.setLives(bomberLives);
 				timer += 1000;
 				_frame.setTitle(TITLE + " | " + updates + " rate, " + frames + " fps");
 				updates = 0;
@@ -168,11 +179,15 @@ public class Game extends Canvas {
 	public static int getBombRadius() {
 		return bombRadius;
 	}
+
+	public static void setBomberLives(int _lives) { bomberLives = _lives; }
+
+	public static int getBomberLives() { return bomberLives; }
 	
 	public static void addBomberSpeed(double i) {
 		bomberSpeed += i;
 	}
-	
+
 	public static void addBombRadius(int i) {
 		bombRadius += i;
 	}
